@@ -1,3 +1,7 @@
+;;;
+;;;
+;;;
+;;;
 (defvar escj2-command nil
   "Command for ESC/Java2 executable")
 
@@ -8,7 +12,7 @@
   "Keymap for ESC/Java2 minor mode")
 
 (defvar escj2-output-buffer-name nil
-  "Name of output buffer for ESC/Java2")
+  "Name of output buffer for ESC/Java2") 
 
 (progn
   (setq escj2-command "escj"))
@@ -18,7 +22,8 @@
 
 (progn
   (setq escj2-mode-keymap (make-sparse-keymap))
-  (define-key escj2-mode-keymap (kbd "C-c v") 'escj2-verify-buffer))
+  (define-key escj2-mode-keymap (kbd "C-c v") 'escj2-verify-current-buffer)
+  (define-key escj2-mode-keymap (kbd "C-c b v") 'escj2-verify-buffer))
 
 (progn
   (setq escj2-output-buffer-name "*escj2-output*"))
@@ -33,7 +38,9 @@
   escj2-mode-keymap
   :group 'escj2)
 
-
+(defun escj2-verify-current-buffer ()
+  (interactive)
+  (escj2-verify-buffer (buffer-name (current-buffer))))
 
 (defun escj2-verify-buffer (buffer)
   (interactive "bBuffer: ")
@@ -43,17 +50,3 @@
     ;(erase-buffer)
     (start-process "escj" escj2-output-buffer-name escj2-command file-name escj2-command-options)))
 
-
-(defvar escj-command (expand-file-name "~/bin/escj"))
-
-(defvar escj-buffer-name "*escj-output*")
-
-(defun escj2-check-current-buffer ()
-  (interactive)
-  (escj-check-buffer (buffer-name current-buffer)))
-
-(defun escj2-check-buffer (buffer)
-  (interactive "bBuffer: ")
-  (let (file-name (buffer-file-name buffer))
-    (call-process "escj" nil escj-buffer-name nil file-name)
-    (switch-to-buffer-other-window escj-buffer-name)))
